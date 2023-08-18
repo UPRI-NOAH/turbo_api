@@ -13,7 +13,7 @@ Python 3.9
   ```
 </details>
 <details open>
-<summary>Install dependencies and run pipenv shell</summary>
+<summary>Install dependencies and run shell</summary>
     
   ```
    pipenv install dependencies
