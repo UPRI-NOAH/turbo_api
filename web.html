@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Map Display</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* Prevent map overflow */
+        }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        .legend { position: absolute; z-index: 1000; bottom: 20px; right: 20px; background-color: white; padding: 10px; border: 1px solid #ccc; }
+		#title { position: absolute;z-index:1000; top: 20px; left: 45px; font-size: 24px; font-weight: bold;background-color: white; padding: 10px; border: 1px solid #ccc; }
+		.legend img {
+            background-color: transparent;
+		}
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+	<div id="title">Leaflet Map Display</div>
+    <div class="legend">
+        <p><input type="checkbox" id="shelterCheckbox" checked><img src="s.png" alt="Shelter Icon" width="20" height="20"> Shelter</p>
+        <p><input type="checkbox" id="policeStationCheckbox" checked><img src="p.png" alt="Police Station Icon" width="20" height="20"> Police Station</p>
+        <p><input type="checkbox" id="fireStationCheckbox" checked><img src="f.png" alt="Fire Station Icon" width="20" height="20"> Fire Station</p>
+    </div>
+
+    <script>
+        var map = L.map('map').setView([14.6760, 121.0437], 13);
+        var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        var shelterIcon = L.icon({
+            iconUrl: "s.png",
+            iconSize: [29, 29],
+        });
+
+        var policeStationIcon = L.icon({
+            iconUrl: "p.png",
+            iconSize: [29, 29],
+        });
+
+        var fireStationIcon = L.icon({
+            iconUrl: "f.png",
+            iconSize: [29, 29],
+        });
+
+        var shelterLayer, policeStationLayer, fireStationLayer;
+
+        $.getJSON("http://127.0.0.1:8000/api/overpass/?format=json", function(sheltersData) {
+            shelterLayer = L.geoJson(sheltersData, {
+                pointToLayer: function(feature, latlng) {
+                    var marker = L.marker(latlng, {icon: shelterIcon});
+                    marker.on('click', markerOnClick); // Add click event listener
+                    return marker;
+                },
+            });
+        });
+
+        $.getJSON("http://127.0.0.1:8000/api/police/?format=json", function(policeStationData) {
+            policeStationLayer = L.geoJson(policeStationData, {
+                pointToLayer: function(feature, latlng) {
+                    var marker = L.marker(latlng, {icon: policeStationIcon});
+                    marker.on('click', markerOnClickPF); // Add click event listener
+                    return marker;
+                },
+            });
+        });
+
+        $.getJSON("http://127.0.0.1:8000/api/fire/?format=json", function(fireStationsData) {
+            fireStationLayer = L.geoJson(fireStationsData, {
+                pointToLayer: function(feature, latlng) {
+                    var marker = L.marker(latlng, {icon: fireStationIcon});
+                    marker.on('click', markerOnClickPF); // Add click event listener
+                    return marker;
+                },
+            });
+        });
+
+        function markerOnClick(e) {
+            var prop = e.target.feature.properties;
+            var name = prop.name;
+            var emergency_facility = prop.emergency_facility;
+
+            L.popup()
+                .setLatLng(e.latlng)
+                .setContent('<b>Name: ' + name + '</b><br> <b>Tag</b>: ' + emergency_facility)
+                .openOn(map);
+       
+        }
+        function markerOnClickPF(e) {
+            var prop = e.target.feature.properties;
+            var name = prop.name;
+            var amenity = prop.amenity;
+
+            L.popup()
+                .setLatLng(e.latlng)
+                .setContent('<b>Name: ' + name + '</b><br> <b>Tag</b>: ' + amenity)
+                .openOn(map);
+            }
+
+        map.on('click', function() {
+            map.closePopup();
+        });
+
+        $('#shelterCheckbox').change(function() {
+            if (this.checked) {
+                if (!map.hasLayer(shelterLayer)) {
+                    map.addLayer(shelterLayer);
+                }
+            } else {
+                if (map.hasLayer(shelterLayer)) {
+                    map.removeLayer(shelterLayer);
+                }
+            }
+        });
+
+        $('#policeStationCheckbox').change(function() {
+            if (this.checked) {
+                if (!map.hasLayer(policeStationLayer)) {
+                    map.addLayer(policeStationLayer);
+                }
+            } else {
+                if (map.hasLayer(policeStationLayer)) {
+                    map.removeLayer(policeStationLayer);
+                }
+            }
+        });
+
+        $('#fireStationCheckbox').change(function() {
+            if (this.checked) {
+                if (!map.hasLayer(fireStationLayer)) {
+                    map.addLayer(fireStationLayer);
+                }
+            } else {
+                if (map.hasLayer(fireStationLayer)) {
+                    map.removeLayer(fireStationLayer);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
