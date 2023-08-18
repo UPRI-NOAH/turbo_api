@@ -16,7 +16,7 @@ Python 3.9
 <summary>Install dependencies and run shell</summary>
     
   ```
-   pipenv install dependencies
+   pipenv install #dependencies
    pipenv shell
   ```
 </details>
