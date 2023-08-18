@@ -33,6 +33,8 @@ class OverpassDataViewset(mixins.ListModelMixin,viewsets.GenericViewSet):
         queryset = self.filterset_class(self.request.GET,queryset=queryset)
        
         data = serialize("geojson",queryset.qs)
+        with open('data.json', 'w') as outfile:
+            json.dump(json.loads(data), outfile)
         return Response(data = json.loads(data))
 
 class OverpassPoliceDataViewset(mixins.ListModelMixin,viewsets.GenericViewSet):
@@ -47,6 +49,9 @@ class OverpassPoliceDataViewset(mixins.ListModelMixin,viewsets.GenericViewSet):
         queryset = self.filterset_class(self.request.GET,queryset=queryset)
        
         data = serialize("geojson",queryset.qs)
+        with open('police.json', 'w') as outfile:
+            json.dump(json.loads(data), outfile)
+
         return Response(data = json.loads(data))
 class OverpassFireDataViewset(mixins.ListModelMixin,viewsets.GenericViewSet):
     queryset = OverpassFireData.objects.all()
@@ -60,6 +65,8 @@ class OverpassFireDataViewset(mixins.ListModelMixin,viewsets.GenericViewSet):
         queryset = self.filterset_class(self.request.GET,queryset=queryset)
        
         data = serialize("geojson",queryset.qs)
+        with open('fire.json', 'w') as outfile:
+            json.dump(json.loads(data), outfile)
         return Response(data = json.loads(data))
 
 

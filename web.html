@@ -57,7 +57,7 @@
 
         var shelterLayer, policeStationLayer, fireStationLayer;
 
-        $.getJSON("http://127.0.0.1:8000/api/overpass/?format=json", function(sheltersData) {
+        $.getJSON("data.json", function(sheltersData) {
             shelterLayer = L.geoJson(sheltersData, {
                 pointToLayer: function(feature, latlng) {
                     var marker = L.marker(latlng, {icon: shelterIcon});
@@ -67,7 +67,7 @@
             });
         });
 
-        $.getJSON("http://127.0.0.1:8000/api/police/?format=json", function(policeStationData) {
+        $.getJSON("police.json", function(policeStationData) {
             policeStationLayer = L.geoJson(policeStationData, {
                 pointToLayer: function(feature, latlng) {
                     var marker = L.marker(latlng, {icon: policeStationIcon});
@@ -77,7 +77,7 @@
             });
         });
 
-        $.getJSON("http://127.0.0.1:8000/api/fire/?format=json", function(fireStationsData) {
+        $.getJSON("fire.json", function(fireStationsData) {
             fireStationLayer = L.geoJson(fireStationsData, {
                 pointToLayer: function(feature, latlng) {
                     var marker = L.marker(latlng, {icon: fireStationIcon});
