@@ -5,8 +5,8 @@ This repository will set up an API for Overpass turbo.
 Python 3.9
 
 ## Installation
-1. Set up Pyenv
--sudo apt update
+1. Set up Pyenv\n
+-sudo apt update\n
 -sudo apt upgrade
 
 2. Install dependencies
