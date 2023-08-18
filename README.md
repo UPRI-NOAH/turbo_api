@@ -6,8 +6,8 @@ Python 3.9
 
 ## Installation
 1. Set up Pyenv
-  sudo apt update
-  sudo apt upgrade
+sudo apt update
+sudo apt upgrade
 
 2. Install dependencies
    
